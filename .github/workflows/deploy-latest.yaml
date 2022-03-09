@@ -1,0 +1,58 @@
+name: Deploy
+
+on:
+  workflow_call:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-20.04
+    permissions:
+      packages: write
+      contents: read
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Get Version
+      id: getVersion
+      run:  |
+        VERSION=$(cat VERSION)
+        echo "::set-output name=version::$VERSION"
+    - name: Get tag
+      id: getTag
+      uses: actions/github-script@v6
+      with:
+        result-encoding: string
+        script: |
+          let hasTag = 'false';
+          try {
+            const ref = await github.rest.git.getRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: 'tags/${{ steps.getVersion.outputs.version }}'
+            });
+            if (ref.status === 200) {
+              hasTag = 'true';
+            }
+          } catch(err) {}
+          return hasTag;
+    - name: Check tag
+      if: steps.getTag.outputs.result != 'false'
+      run: |
+        echo "::error title=Duplicate tag::Tag ${{ steps.getTag.outputs.result }} already in use, update version in package.json"
+        exit 1
+    - name: Log in to registry
+      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+    - name: Build image
+      run: docker buildx build . --file Dockerfile --tag ghcr.io/${{ github.repository }}:latest --tag ghcr.io/${{ github.repository }}:${{ steps.getVersion.outputs.version }} --label "runnumber=${GITHUB_RUN_ID}"
+    - name: Push image
+      run: docker push ghcr.io/${{ github.repository }} --all-tags
+    - name: Create tag
+      uses: actions/github-script@v6
+      with:
+        script: |
+          github.rest.git.createRef({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            ref: 'refs/tags/${{ steps.getVersion.outputs.version }}',
+            sha: context.sha
+          })
