@@ -1,0 +1,19 @@
+name: Build
+
+on:
+  workflow_call:
+    inputs:
+      path:
+        description: 'Path to Dockerfile'
+        required: false
+        type: string
+        default: 'Dockerfile'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Build image
+      run: docker buildx build . --file ${{ inputs.path }}
