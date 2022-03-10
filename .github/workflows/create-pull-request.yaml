@@ -18,7 +18,7 @@ on:
 
 jobs:
   createPullRequest:
-    runs-on: ${{ input.runs-on }}
+    runs-on: ${{ inputs.runs-on }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
