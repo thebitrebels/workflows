@@ -7,9 +7,8 @@ on:
         required: true
         type: string
       source:
-        required: false
+        required: true
         type: string
-        default: ${{ github.ref_name }}
       runs-on:
         description: 'Sets the run environment (default is ubuntu 20.04)'
         required: false
@@ -23,16 +22,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          ref: ${{ inputs.target }}
-      - name: Create Pull Request
-        id: cpr
-        uses: peter-evans/create-pull-request@v3
+          ref: ${{ inputs.source }}
+      - name: Download PR template
+        run: |
+          mkdir -p .github
+          curl https://raw.githubusercontent.com/thebitrebels/.github/master/PULL_REQUEST_TEMPLATE.md -o .github/PULL_REQUEST_TEMPLATE.md
+      - name: pull-request
+        uses: repo-sync/pull-request@v2
         with:
-          branch: ${{ inputs.source }}
-          title: '[DRAFT] PR: ${{ inputs.source }} into ${{ inputs.target }}'
-          body: |
-            This is a draft pull request to merge ${{ inputs.source }} into ${{ inputs.target }}.
-          labels: |
-            automated pr
-          assignees: ${{ github.actor }}
-          draft: true
+          pr_title: '[DRAFT] PR: ${{ inputs.source }} into ${{ inputs.target }}'
+          pr_template: ".github/PULL_REQUEST_TEMPLATE.md"
+          pr_label: automated pr
+          destination_branch: ${{ inputs.target }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          pr_draft: true
