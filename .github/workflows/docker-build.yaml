@@ -4,15 +4,20 @@ on:
   workflow_call:
     inputs:
       path:
-        description: 'Path to Dockerfile'
+        description: 'Path to Dockerfile (default is Dockerfile)'
         required: false
         type: string
         default: 'Dockerfile'
+      runs-on:
+        description: 'Sets the run environment (default is ubuntu 20.04)'
+        required: false
+        type: string
+        default: 'ubuntu-20.04'
 
 jobs:
   build:
-    runs-on: self-hosted
-    steps:
+    runs-on: 
+    steps: ${{ inputs.runs-on }}
     - name: Checkout
       uses: actions/checkout@v2
     - name: Build image
