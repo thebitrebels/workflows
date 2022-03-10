@@ -23,7 +23,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          ref: target
+          ref: ${{ inputs.target }}
       - name: Create Pull Request
         id: cpr
         uses: peter-evans/create-pull-request@v3
