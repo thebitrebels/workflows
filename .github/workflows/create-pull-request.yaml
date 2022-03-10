@@ -22,11 +22,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          ref: target
       - name: Create Pull Request
         id: cpr
         uses: peter-evans/create-pull-request@v3
         with:
-          branch: ${{ inputs.target }}
+          branch: ${{ inputs.source }}
           title: '[DRAFT] PR: ${{ inputs.source }} into ${{ inputs.target }}'
           body: |
             This is a draft pull request to merge ${{ inputs.source }} into ${{ inputs.target }}.
