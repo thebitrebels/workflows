@@ -32,7 +32,6 @@ jobs:
         with:
           pr_title: '[DRAFT] PR: ${{ inputs.source }} into ${{ inputs.target }}'
           pr_template: ".github/PULL_REQUEST_TEMPLATE.md"
-          pr_label: automated pr
+          pr_label: draft
           destination_branch: ${{ inputs.target }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          pr_draft: true
