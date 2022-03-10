@@ -6,10 +6,15 @@ on:
       tag:
         required: true
         type: string
+      runs-on:
+        description: 'Sets the run environment (default is ubuntu 20.04)'
+        required: false
+        type: string
+        default: 'ubuntu-20.04'
 
 jobs:
   deploy:
-    runs-on: ubuntu-20.04
+    runs-on: ${{ inputs.runs-on }}
     permissions:
       packages: write
       contents: read
