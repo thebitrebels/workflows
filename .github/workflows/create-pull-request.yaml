@@ -1,0 +1,36 @@
+name: Create Pull Request
+
+on:
+  workflow_call:
+    inputs:
+      target:
+        required: true
+        type: string
+      source:
+        required: false
+        type: string
+        default: ${{ github.ref_name }}
+      runs-on:
+        description: 'Sets the run environment (default is ubuntu 20.04)'
+        required: false
+        type: string
+        default: 'ubuntu-20.04'
+
+jobs:
+  createPullRequest:
+    runs-on: ${{ input.runs-on }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Create Pull Request
+        id: cpr
+        uses: peter-evans/create-pull-request@v3
+        with:
+          branch: ${{ inputs.target }}
+          title: '[DRAFT] PR: ${{ inputs.source }} into ${{ inputs.target }}'
+          body: |
+            This is a draft pull request to merge ${{ inputs.source }} into ${{ inputs.target }}.
+          labels: |
+            automated pr
+          assignees: ${{ github.actor }}
+          draft: true
