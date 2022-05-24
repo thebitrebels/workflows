@@ -11,10 +11,6 @@ on:
         required: false
         type: string
         default: 'ubuntu-20.04'
-      npm-token:
-        description: 'Sets the github token that is used to authenticate with the github npm registry'
-        required: false
-        type: string
 
 jobs:
   deploy:
@@ -28,6 +24,6 @@ jobs:
     - name: Log in to registry
       run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
     - name: Build image
-      run: docker buildx build . --build-arg GH_NPM_TOKEN=${{ inputs.npm-token }} --file Dockerfile --tag ghcr.io/${{ github.repository }}:${{ inputs.tag }} --label "runnumber=${{ inputs.tag }}-${GITHUB_RUN_ID}"
+      run: docker buildx build . --build-arg GH_NPM_TOKEN=${{ secrets.npm-token }} --file Dockerfile --tag ghcr.io/${{ github.repository }}:${{ inputs.tag }} --label "runnumber=${{ inputs.tag }}-${GITHUB_RUN_ID}"
     - name: Push image
       run: docker push ghcr.io/${{ github.repository }} --all-tags
