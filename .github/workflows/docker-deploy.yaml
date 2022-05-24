@@ -11,6 +11,11 @@ on:
         required: false
         type: string
         default: 'ubuntu-20.04'
+      npm-token:
+        description: 'Sets the github token that is used to authenticate with the github npm registry'
+        required: false
+        type: string
+        default: secrets.GITHUB_TOKEN
 
 jobs:
   deploy:
