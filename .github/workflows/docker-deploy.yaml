@@ -29,6 +29,6 @@ jobs:
     - name: Log in to registry
       run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
     - name: Build image
-      run: docker buildx build . --build-arg GH_NPM_TOKEN=${{ secrets.LE_GH_TOKEN }} --file Dockerfile --tag ghcr.io/${{ github.repository }}:${{ inputs.tag }} --label "runnumber=${{ inputs.tag }}-${GITHUB_RUN_ID}"
+      run: docker buildx build . --build-arg GH_NPM_TOKEN=${{ inputs.npm-token }} --file Dockerfile --tag ghcr.io/${{ github.repository }}:${{ inputs.tag }} --label "runnumber=${{ inputs.tag }}-${GITHUB_RUN_ID}"
     - name: Push image
       run: docker push ghcr.io/${{ github.repository }} --all-tags
