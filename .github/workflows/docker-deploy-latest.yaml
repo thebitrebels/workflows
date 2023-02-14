@@ -4,10 +4,10 @@ on:
   workflow_call:
     inputs:
       runs-on:
-        description: 'Sets the run environment (default is ubuntu 20.04)'
+        description: 'Sets the run environment (default is ubuntu 22.04)'
         required: false
         type: string
-        default: 'ubuntu-20.04'
+        default: 'ubuntu-22.04'
     secrets:
       npm-token:
         required: false
@@ -20,7 +20,7 @@ jobs:
       contents: read
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: Get Version
       id: getVersion
       run:  |

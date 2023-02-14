@@ -9,16 +9,16 @@ on:
         type: string
         default: 'Dockerfile'
       runs-on:
-        description: 'Sets the run environment (default is ubuntu 20.04)'
+        description: 'Sets the run environment (default is ubuntu 22.04)'
         required: false
         type: string
-        default: 'ubuntu-20.04'
+        default: 'ubuntu-22.04'
 
 jobs:
   build:
     runs-on: ${{ inputs.runs-on }}
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: Build image
       run: docker buildx build . --file ${{ inputs.path }}

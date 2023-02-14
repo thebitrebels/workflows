@@ -7,10 +7,10 @@ on:
         required: true
         type: string
       runs-on:
-        description: 'Sets the run environment (default is ubuntu 20.04)'
+        description: 'Sets the run environment (default is ubuntu 22.04)'
         required: false
         type: string
-        default: 'ubuntu-20.04'
+        default: 'ubuntu-22.04'
     secrets:
       npm-token:
         required: false
@@ -23,7 +23,7 @@ jobs:
       contents: read
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: Log in to registry
       run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
     - name: Build image
