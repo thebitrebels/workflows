@@ -19,7 +19,7 @@ jobs:
     runs-on: ${{ inputs.runs-on }}
     permissions:
       packages: write
-      contents: read
+      contents: write
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -33,6 +33,7 @@ jobs:
       uses: actions/github-script@v6
       with:
         result-encoding: string
+        github-token: "${{ secrets.GITHUB_TOKEN }}"
         script: |
           let hasTag = 'false';
           try {
