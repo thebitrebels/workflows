@@ -15,8 +15,7 @@ on:
 
 jobs:
   release:
-    name: Helm chart release
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runs-on }}
     permissions:
       contents: read
       packages: write
@@ -46,4 +45,4 @@ jobs:
           helm package "$chart_dir"
 
           # Push the chart to the container registry
-          helm push "${chart_name}-${chart_version}.tgz" oci://ghcr.io/${github.repository_owner}/charts/${chart_name}
+          helm push "${chart_name}-${chart_version}.tgz" oci://ghcr.io/${{ github.repository_owner }}/charts/${chart_name}
