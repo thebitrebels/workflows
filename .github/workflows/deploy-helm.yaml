@@ -1,0 +1,49 @@
+name: Deploy Helm
+
+on:
+  workflow_call:
+    inputs:
+      chart-dir:
+        description: "The directory of the Helm chart to deploy"
+        required: true
+        type: string
+      runs-on:
+        description: 'Sets the run environment (default is ubuntu 22.04)'
+        required: false
+        type: string
+        default: 'ubuntu-22.04'
+
+jobs:
+  release:
+    name: Helm chart release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4.2.2
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v4.2.0
+        with:
+          version: v3.12.1
+
+      - name: Login to GitHub Container Registry
+        run: helm registry login ghcr.io -u $GITHUB_ACTOR --password "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Package and Push Helm Charts
+        run: |
+          chart_dir="${{ inputs.chart-dir }}"
+
+          # Extract the chart name from Chart.yaml
+          chart_name=$(grep '^name:' "$chart_dir/Chart.yaml" | awk '{print $2}')
+
+          # Extract the chart version from Chart.yaml
+          chart_version=$(grep '^version:' "$chart_dir/Chart.yaml" | awk '{print $2}')
+
+          # Package the chart
+          helm package "$chart_dir"
+
+          # Push the chart to the container registry
+          helm push "${chart_name}-${chart_version}.tgz" oci://ghcr.io/${github.repository_owner}/charts/${chart_name}
