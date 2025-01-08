@@ -35,6 +35,9 @@ jobs:
         run: |
           chart_dir="${{ inputs.chart-dir }}"
 
+          # Extract the chart name from Chart.yaml
+          chart_name=$(grep '^name:' "$chart_dir/Chart.yaml" | awk '{print $2}')
+
           # Extract the chart version from Chart.yaml
           chart_version=$(grep '^version:' "$chart_dir/Chart.yaml" | awk '{print $2}')
 
